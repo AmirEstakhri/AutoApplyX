@@ -62,7 +62,7 @@ while True:
             if load_more_btn.is_displayed():
                 print("🔄 Clicking 'Mehr Ergebnisse laden' button...")
                 driver.execute_script("arguments[0].click();", load_more_btn)
-                time.sleep(2)
+                time.sleep(5)
                 same_height_counter = 0  # reset after clicking
         except:
             print("✅ No more 'Mehr Ergebnisse laden' button found.")
@@ -102,14 +102,13 @@ for card in job_cards:
 
 print(f"🔍 Extracted {len(job_links)} job links.")
 
-# Process job links until we collect 5 unique emails
+# Process all job links and collect all unique emails
 results = []
 visited_emails = set()
 processed = 0
 
 for link in job_links:
-    if len(results) >= 5:
-        break
+
 
     driver.get(link)
 
