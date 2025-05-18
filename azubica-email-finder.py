@@ -6,17 +6,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+import re
 
 # Setup WebDriver
 options = Options()
 options.add_argument("--start-maximized")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-# Step 1: Open the main job listing page
+# Open the main job listing page
 url = "https://www.azubica.de/ausbildungsberufe/fachinformatiker-fachrichtung-systemintegration/"
 driver.get(url)
 
-# Step 2: Wait for job listings to load
+# Wait for job listings to load
 try:
     WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href^="/ausbildungen/"][href*="?job="]'))
@@ -27,12 +28,12 @@ except Exception as e:
     driver.quit()
     exit()
 
-# Step 3: Scroll to load more jobs
+# Scroll to load more jobs
 for i in range(10):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(1.5)
 
-# Step 4: Collect job links and fix URLs
+# Collect job links
 job_cards = driver.find_elements(By.CSS_SELECTOR, 'a[href^="/ausbildungen/"][href*="?job="]')
 job_links = []
 for card in job_cards:
@@ -42,17 +43,19 @@ for card in job_cards:
     elif href.startswith("http"):
         full_url = href
     else:
-        full_url = "https://www.azubica.de/" + href  # Fallback
-    job_links.append(full_url)
+        full_url = "https://www.azubica.de/" + href
+    if full_url not in job_links:
+        job_links.append(full_url)
 
 print(f"🔍 Found {len(job_links)} job links.")
 
 if not job_links:
-    print("⚠️ No job links found. Check page structure or loading issue.")
+    print("⚠️ No job links found.")
     driver.quit()
     exit()
 
-# Step 5: Visit each job and check for email application
+# Collect emails with job links
+email_data = []
 for index, link in enumerate(job_links, 1):
     print(f"\n➡️ [{index}/{len(job_links)}] Visiting job: {link}")
     driver.get(link)
@@ -65,16 +68,32 @@ for index, link in enumerate(job_links, 1):
         print("✅ 'Jetzt bewerben!' clicked.")
         time.sleep(2)
 
-        # Look for email application button
         email_links = driver.find_elements(By.CSS_SELECTOR, 'a.btn-bewerbung[href^="mailto:"]')
         if email_links:
             mailto = email_links[0].get_attribute("href")
-            print(f"📧 Found email: {mailto}")
+            match = re.search(r'mailto:([^?]+)', mailto)
+            if match:
+                email = match.group(1)
+                entry = f"email = {email} | link = {link}"
+                if entry not in email_data:
+                    email_data.append(entry)
+                    print(f"📧 {entry}")
+            else:
+                print("⚠️ Malformed mailto link.")
         else:
             print("❌ No email link found.")
 
     except Exception as e:
-        print(f"⚠️ Could not click or find email: {e}")
+        print(f"⚠️ Error while processing: {e}")
+
+# Save to file
+if email_data:
+    with open("emails_with_links.txt", "w", encoding="utf-8") as f:
+        for line in email_data:
+            f.write(line + "\n")
+    print(f"\n💾 Saved {len(email_data)} email entries to 'emails_with_links.txt'")
+else:
+    print("⚠️ No emails collected.")
 
 # Done
 driver.quit()
