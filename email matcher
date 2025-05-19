@@ -1,0 +1,32 @@
+import re
+
+# === Step 1: Paste your known email list text ===
+known_text = """ i have this email or applyed to this test@gamil.com """
+
+# === Step 2: Paste job entries ===
+job_entries = """ 
+    Email: test@gmail.com
+    Company: random
+    Title: test
+    Link: test.com
+ """
+
+# === Step 3: Extract email lists ===
+known_emails = set(re.findall(r'[\w\.-]+@[\w\.-]+', known_text))
+job_blocks = re.findall(r"(Email: .+?\nCompany: .+?\nTitle: .+?\nLink: .+?)(?=\nEmail:|\Z)", job_entries, re.DOTALL)
+
+# === Step 4: Filter out matched entries ===
+unmatched_blocks = []
+for block in job_blocks:
+    match = re.search(r"Email:\s*(.+)", block)
+    if match:
+        job_email = match.group(1).strip()
+        if job_email not in known_emails:
+            unmatched_blocks.append(block.strip())
+
+# === Step 5: Save unmatched entries ===
+with open("unmatched_jobs.txt", "w", encoding="utf-8") as f:
+    for block in unmatched_blocks:
+        f.write(block + "\n\n")
+
+print(f"✅ {len(unmatched_blocks)} unmatched job entries saved to 'unmatched_jobs.txt'")
