@@ -31,9 +31,7 @@ Python 3.x installed
 
 Install required packages (if not already):
 
-bash
-Copy
-Edit
+
 pip install selenium webdriver-manager
 
 🚀 Usage Steps
@@ -41,10 +39,9 @@ pip install selenium webdriver-manager
 Customize Your Search Term
 Near the top of the script, change this line to whatever job you're looking for:
 
-python
-Copy
-Edit
+
 search_input.send_keys("Fachinformatiker/in")  # ← change this to your desired job keyword
+---
 Examples:
 
 "Fachinformatiker/in für Systemintegration"
@@ -57,9 +54,7 @@ Run the Script
 
 From your terminal:
 
-bash
-Copy
-Edit
+
 python ausbildung_scraper.py
 It will:
 
@@ -82,9 +77,6 @@ Location: same folder as the script.
 
 Each entry includes:
 
-vbnet
-Copy
-Edit
 Email: [contact email]
 Company: [company name]
 Title: [job title]
