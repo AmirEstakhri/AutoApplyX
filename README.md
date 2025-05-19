@@ -21,8 +21,9 @@ Freelance Developer | Automation Enthusiast
 ☁️ Save results to Google Drive or Sheets
 
 🧾 GUI for easier job management
----
+
 📄 License
+---
 MIT License – feel free to use and modify.
 
 
