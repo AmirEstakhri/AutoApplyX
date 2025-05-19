@@ -28,3 +28,4 @@ Freelance Developer | Automation Enthusiast
 MIT License – feel free to use and modify.
 
 
+Made with ❤️ to help automate job search for Ausbildung applications!
