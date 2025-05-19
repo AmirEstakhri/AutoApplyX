@@ -25,7 +25,7 @@ try:
         EC.presence_of_element_located((By.ID, "main-search-bar-what"))
     )
     search_input.clear()
-    search_input.send_keys("Fachinformatiker/in")
+    search_input.send_keys("Fachinformatiker/in") #change this for any job you want
     time.sleep(1)
     search_input.send_keys(Keys.ENTER)
     print("✅ Search initiated.")
