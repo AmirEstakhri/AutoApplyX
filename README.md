@@ -23,7 +23,7 @@ pip install selenium webdriver-manager
 ---
 
 ## 🚀 Usage
-
+https://github.com/user-attachments/assets/cc143791-732b-40bd-a8e8-02d17e5f61b5
 1. **Configure**
 
    * **Search term** (around line 30 in the script-you can change it to the job you want):
