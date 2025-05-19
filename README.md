@@ -108,9 +108,9 @@ Saves the results (email + job link) into a .txt file
 🔧 Requirements
 ---
 Install required Python packages:
-
-
 pip install selenium webdriver-manager
+
+
 📁 How to Use
 ---
 Edit Search Page (Optional)
