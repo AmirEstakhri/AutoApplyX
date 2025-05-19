@@ -96,7 +96,7 @@ options.add_argument("--headless")
 ## 🙋‍♂️ Author
 
 **Amirhossein Estakhri**
-Freelance Full‑Stack & Backend Developer | Automation Enthusiast
+Freelance Backend Developer | Automation Enthusiast
 
 ```
 ```
