@@ -78,7 +78,9 @@ Email: [contact email]
 Company: [company name]
 Title: [job title]
 Link: [link to job posting]
+
 📌 Notes
+---
 Emails are de-duplicated automatically
 
 If no email is found on a job page, that listing is skipped
