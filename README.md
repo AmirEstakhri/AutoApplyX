@@ -16,6 +16,7 @@ Amirhossein Estakhri
 Freelance Developer | Automation Enthusiast 
 ---
 💡 Future Improvements
+---
 📬 Automatically send personalized emails via Gmail API
 
 ☁️ Save results to Google Drive or Sheets
