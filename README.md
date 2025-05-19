@@ -26,12 +26,12 @@ pip install selenium webdriver-manager
 
 1. **Configure**
 
-   * **Search term** (around line 30 in the script):
+   * **Search term** (around line 30 in the script-you can change it to the job you want):
 
      ```python
      search_input.send_keys("Fachinformatiker/in")
      ```
-   * **Target URL** (around line 10 in the script):
+   * **Target URL** (around line 10 in the script- change the ulr based on your needs):
 
      ```python
      url = "https://www.azubica.de/ausbildungsberufe/fachinformatiker-fachrichtung-systemintegration/"
