@@ -31,7 +31,7 @@ pip install selenium webdriver-manager
      ```python
      search_input.send_keys("Fachinformatiker/in")
      ```
-   * **Target URL** (around line 10 in the script- change the ulr based on your needs):
+   * **Target URL** (around line 10 in the script- change the url based on your needs):
 
      ```python
      url = "https://www.azubica.de/ausbildungsberufe/fachinformatiker-fachrichtung-systemintegration/"
