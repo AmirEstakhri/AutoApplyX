@@ -89,6 +89,63 @@ If a “Mehr Ergebnisse laden” button appears, it is clicked automatically
 
 You can tweak the script to filter by location or category later if needed
 ---
+💻 Azubica.de Job Email Scraper
+---
+This script uses Selenium to automate the extraction of email addresses and job links from azubica.de for the job role Fachinformatiker – Fachrichtung Systemintegration(or any job that you want).
+
+🚀 Features
+---
+Automatically opens job listings on azubica.de
+
+Scrolls the page to load more jobs
+
+Visits each job listing and clicks "Jetzt bewerben!"
+
+Extracts company email addresses
+
+Saves the results (email + job link) into a .txt file
+
+🔧 Requirements
+---
+Install required Python packages:
+
+
+pip install selenium webdriver-manager
+📁 How to Use
+---
+Edit Search Page (Optional)
+The URL is currently set to the Systemintegration listings page:
+
+url = "https://www.azubica.de/ausbildungsberufe/fachinformatiker-fachrichtung-systemintegration/"
+You can change it to another search result page if needed.
+
+Run the Script
+
+Save the script as azubica_email_scraper.py, then run:
+
+=
+python azubica_email_scraper.py
+Results File
+
+After execution, the emails will be saved to:
+
+
+emails_with_links.txt
+Each line contains:
+
+
+email = [email@example.com] | link = [link to job]
+📌 Notes
+Script scrolls the page 10 times to load additional jobs (you can adjust this number).
+
+Duplicates are avoided automatically.
+
+If the "Jetzt bewerben!" button is not found or no email appears, the listing is skipped.
+
+Script uses headful Chrome (you'll see the browser). You can change it to headless if needed.
+
+🛡️ Disclaimer
+This script is for educational and personal use only. Please respect the terms of service of azubica.de and avoid sending mass emails.
 🙋‍♂️ Author
 Amirhossein Estakhri
 Freelance Developer | Automation Enthusiast 
