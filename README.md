@@ -1,4 +1,4 @@
-````markdown
+
 # 💼 Job Email Automation Toolkit
 
 A Python/Selenium toolkit to scrape, extract, filter, and manage job‑application emails for Ausbildung roles in Germany.
@@ -15,7 +15,7 @@ A Python/Selenium toolkit to scrape, extract, filter, and manage job‑applicati
 ---
 
 ## 🔧 Requirements
-
+````markdown
 ```bash
 pip install selenium webdriver-manager
 ````
