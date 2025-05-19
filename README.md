@@ -13,5 +13,4 @@ This repository provides a complete toolkit for automating the discovery, extrac
 ---
 🙋‍♂️ Author
 Amirhossein Estakhri
-Freelance Developer | Automation Enthusiast | 🇮🇷/🇩🇪
-LinkedIn | GitHub
+Freelance Developer | Automation Enthusiast 
