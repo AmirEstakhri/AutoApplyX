@@ -14,3 +14,15 @@ This repository provides a complete toolkit for automating the discovery, extrac
 🙋‍♂️ Author
 Amirhossein Estakhri
 Freelance Developer | Automation Enthusiast 
+---
+💡 Future Improvements
+📬 Automatically send personalized emails via Gmail API
+
+☁️ Save results to Google Drive or Sheets
+
+🧾 GUI for easier job management
+---
+📄 License
+MIT License – feel free to use and modify.
+
+
