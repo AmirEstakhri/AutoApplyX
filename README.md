@@ -51,11 +51,8 @@ Examples:
 "Pflegefachmann/-frau"
 
 Run the Script
+---
 
-From your terminal:
-
-
-python ausbildung_scraper.py
 It will:
 
 Open Chrome
