@@ -1,0 +1,24 @@
+import re
+
+def extract_emails_from_text(text: str) -> list:
+    # Regular expression to find emails
+    email_pattern = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
+
+    # Find all matches
+    emails = re.findall(email_pattern, text)
+
+    # Return unique emails (remove duplicates)
+    return list(set(email.strip() for email in emails))
+
+# === add ut text or email list here ===
+text = """
+    Email: test@gmail.com
+    Company: random
+    Title: test
+    Link: test.com
+"""
+
+emails = extract_emails_from_text(text)
+print("📧 Extracted Emails:")
+for email in emails:
+    print(email)
