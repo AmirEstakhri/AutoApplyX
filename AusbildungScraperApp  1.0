@@ -1,0 +1,189 @@
+import os
+import time
+import threading
+import re
+from tkinter import Tk, Label, Button, IntVar, StringVar, filedialog, ttk
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
+class AusbildungScraperApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("AutoApplyX - Ausbildung Scraper")
+
+        # Variables
+        self.search_term = StringVar(value="Fachinformatiker/in")
+        self.limit_var = IntVar(value=10)
+        self.output_dir = StringVar(value=os.getcwd())
+        self.status_text = StringVar(value="Status: Ready.")
+
+        # UI setup
+        self.setup_ui()
+
+    def setup_ui(self):
+        Label(self.root, text="Search Term:", font=("Arial", 12)).pack(pady=4)
+        ttk.Entry(self.root, textvariable=self.search_term, width=40).pack()
+
+        Label(self.root, text="Max Jobs to Scrape:", font=("Arial", 12)).pack(pady=4)
+        ttk.Spinbox(self.root, from_=1, to=1000, textvariable=self.limit_var, width=10).pack()
+
+        Label(self.root, text="Save Results To:", font=("Arial", 12)).pack(pady=4)
+        ttk.Entry(self.root, textvariable=self.output_dir, width=40).pack(pady=2)
+        Button(self.root, text="Browse", command=self.browse_folder).pack(pady=2)
+
+        self.progress = ttk.Progressbar(self.root, orient='horizontal', length=400, mode='determinate')
+        self.progress.pack(pady=10)
+
+        Label(self.root, textvariable=self.status_text, font=("Arial", 10), fg="green").pack(pady=4)
+
+        Button(self.root, text="Start Scraping", command=self.start_scraping_thread, font=("Arial", 11), bg="#007ACC", fg="white").pack(pady=10)
+
+    def browse_folder(self):
+        path = filedialog.askdirectory()
+        if path:
+            self.output_dir.set(path)
+
+    def start_scraping_thread(self):
+        thread = threading.Thread(target=self.scrape_jobs)
+        thread.start()
+
+    def update_status(self, msg):
+        self.status_text.set(f"Status: {msg}")
+        self.root.update_idletasks()
+
+    def scrape_jobs(self):
+        keyword = self.search_term.get().strip()
+        limit = self.limit_var.get()
+        output_path = os.path.join(self.output_dir.get(), "emails_from_ausbildung.txt")
+
+        options = Options()
+        options.add_argument("--start-maximized")
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+        self.update_status("Opening ausbildung.de...")
+        driver.get("https://www.ausbildung.de/")
+        time.sleep(2)
+
+        # Search
+        try:
+            search_input = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "main-search-bar-what")))
+            search_input.clear()
+            search_input.send_keys(keyword)
+            time.sleep(1)
+            search_input.send_keys(Keys.ENTER)
+            time.sleep(3)
+        except Exception as e:
+            self.update_status(f"Search Error: {e}")
+            driver.quit()
+            return
+
+        # Wait for results container
+        try:
+            scroll_outer = WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "infinite-scroll-component__outerdiv"))
+            )
+        except Exception as e:
+            self.update_status("Failed to load job listings.")
+            driver.quit()
+            return
+
+        # Scroll and load more
+        last_h = driver.execute_script("return document.body.scrollHeight")
+        stall = 0
+        self.update_status("Scrolling to load jobs...")
+        while True:
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+            new_h = driver.execute_script("return document.body.scrollHeight")
+            if new_h == last_h:
+                stall += 1
+                try:
+                    btn = driver.find_element(By.XPATH, "//button[contains(text(),'Mehr Ergebnisse laden')]")
+                    driver.execute_script("arguments[0].click();", btn)
+                    time.sleep(3)
+                    stall = 0
+                except:
+                    pass
+                if stall >= 2:
+                    break
+            else:
+                stall = 0
+            last_h = new_h
+
+        # Collect job links
+        cards = scroll_outer.find_elements(By.CSS_SELECTOR, "article.JobPostingCard_cardWrapper__SAt4K")
+        job_links = []
+        for card in cards:
+            try:
+                href = card.find_element(By.CSS_SELECTOR, "a[href^='/stellen/']").get_attribute("href")
+                if not href.startswith("http"):
+                    href = "https://www.ausbildung.de" + href
+                job_links.append(href)
+            except:
+                pass
+
+        job_links = list(dict.fromkeys(job_links))[:limit]
+        total = len(job_links)
+        self.progress["maximum"] = total
+        self.update_status(f"Found {total} jobs.")
+
+        # Process each job
+        results = []
+        seen = set()
+        for idx, link in enumerate(job_links, 1):
+            self.update_status(f"Processing {idx}/{total}")
+            driver.get(link)
+            try:
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "h1.jp-title__title")))
+            except:
+                time.sleep(1)
+
+            # Click more options if present
+            try:
+                mo = driver.find_elements(By.CLASS_NAME, "js-application-button--more-options")
+                if mo:
+                    mo[0].click()
+                    time.sleep(1)
+            except:
+                pass
+
+            page = driver.page_source
+            emails = re.findall(r'mailto:([\w\.\-+%]+@[\w\.\-]+\.\w+)', page)
+            email = next((e for e in emails if e not in seen), None)
+            if email:
+                seen.add(email)
+                try:
+                    title = driver.find_element(By.CSS_SELECTOR, "h1.jp-title__title").text.strip()
+                except:
+                    title = "Unknown"
+                try:
+                    company = driver.find_element(By.CSS_SELECTOR, "h2.title--left a").text.strip()
+                except:
+                    company = "Unknown"
+                results.append((email, company, title, link))
+
+            self.progress["value"] = idx
+            self.root.update_idletasks()
+
+        driver.quit()
+
+        # Save to file
+        if results:
+            with open(output_path, "w", encoding="utf-8") as f:
+                for email, company, title, link in results:
+                    f.write(f"Email: {email}\nCompany: {company}\nTitle: {title}\nLink: {link}\n\n")
+            self.update_status(f"Done! Saved {len(results)} entries to {output_path}")
+        else:
+            self.update_status("No emails found.")
+
+# Run the app
+root = Tk()
+app = AusbildungScraperApp(root)
+root.mainloop()
+
