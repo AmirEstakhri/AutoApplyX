@@ -69,6 +69,7 @@ Link: https://…
 * Scroll loop runs **10 times** by default (adjust `range(10)` if needed).
 * Duplicates are automatically skipped.
 * If the “Jetzt bewerben!” button (azubica) or “Mehr Ergebnisse laden” button (ausbildung) isn’t found, that listing is skipped or the button is clicked automatically.
+* **This is not a spam tool — just a personal assistant to reduce time spent copy-pasting.**
 * Script uses **visible Chrome** by default; enable headless mode by uncommenting:
 
 ```python
