@@ -146,6 +146,7 @@ Script uses headful Chrome (you'll see the browser). You can change it to headle
 
 🛡️ Disclaimer
 This script is for educational and personal use only. Please respect the terms of service of azubica.de and avoid sending mass emails.
+---------------------------------------
 🙋‍♂️ Author
 Amirhossein Estakhri
 Freelance Developer | Automation Enthusiast 
